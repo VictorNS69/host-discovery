@@ -31,7 +31,10 @@ printf "${GREEN}Target: $1 ${NORMAL}\n"
 IP_LIST=$(nmap -sL -n $1 | awk '/Nmap scan report/{print $NF}')
 
 printf "${YELLOW}Doing ping3 scan. This may take some time ${NORMAL}\n"
-for ip in $IP_LIST ; do sudo ping3 -c 1 $ip | grep -v "Timeout" | tee -a ping3_sweep.txt ; done
+for ip in $IP_LIST
+do
+  sudo ping3 -c 1 $ip | grep -v "Timeout" | tee -a ping3_sweep.txt
+done
 
 cat ping3_sweep.txt | awk -F[\'] '{print $2}' > live_hosts.txt
 TOTAL_HOSTS=$(wc -l live_hosts.txt | awk '{print $1}')
@@ -42,8 +45,11 @@ sudo nmap -sS -Pn -p 21-23,80,443,445,8080,8443 -T5 -o nmap_fast_scan.txt -iL li
 printf "${GREEN}Nmap fast scan done! -> $PWD/nmap_fast_scan.txt ${NORMAL}\n"
 
 printf "${YELLOW}Doing full nmap scan. This may take some time ${NORMAL}\n"
-sudo nmap -Pn -A -o nmap_full_scan.txt -iL live_hosts.txt --stats-every 1m
-printf "${GREEN}Nmap full scan done! -> $PWD/nmap_full_scan.txt ${NORMAL}\n"
+for ip in $(cat live_hosts.txt)
+do
+  sudo nmap -Pn -A -o nmap_full_scan_${ip}.txt --stats-every 1m ${ip}
+  printf "${GREEN}Nmap full scan for ${ip} done! -> $PWD/nmap_full_scan_${ip}.txt ${NORMAL}\n"
+done
 
 printf "${GREEN}Script complete! Happy hunting! ${NORMAL}\n"
 
