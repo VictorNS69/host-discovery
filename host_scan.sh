@@ -41,7 +41,7 @@ printf "${YELLOW}Doing fast nmap scan (only a few ports). This may take some tim
 sudo nmap -sS -Pn -p 21-23,80,443,445,8080,8443 -T5 -o nmap_fast_scan.txt -iL live_hosts.txt --stats-every 1m
 printf "${GREEN}Nmap fast scan done! -> $PWD/nmap_fast_scan.txt ${NORMAL}\n"
 
-printf "${YELLOW}Doing full nmap scan. This may take some time $1 ${NORMAL}\n"
+printf "${YELLOW}Doing full nmap scan. This may take some time ${NORMAL}\n"
 sudo nmap -Pn -A -o nmap_full_scan.txt -iL live_hosts.txt --stats-every 1m
 printf "${GREEN}Nmap full scan done! -> $PWD/nmap_full_scan.txt ${NORMAL}\n"
 
