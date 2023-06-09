@@ -25,25 +25,26 @@ if [ "$EUID" -ne 0 ]
 fi
 
 
-printf "${GREEN}Target: $1 ${NORMAL}"
+printf "${GREEN}Target: $1 ${NORMAL}\n"
 
 # Transform IP/mask to all IPs in the range
 IP_LIST=$(nmap -sL -n $1 | awk '/Nmap scan report/{print $NF}')
 
-printf "${YELLOW}Doing ping3 scan. This may take some time ${NORMAL}"
-for i in $IP_LIST ; do sudo ping3 -c 1 $i | grep -v "Timeout" > ping3_sweep.txt ; done
+printf "${YELLOW}Doing ping3 scan. This may take some time ${NORMAL}\n"
+for ip in $IP_LIST ; do sudo ping3 -c 1 $ip | grep -v "Timeout" | tee -a ping3_sweep.txt ; done
 
 cat ping3_sweep.txt | awk -F[\'] '{print $2}' > live_hosts.txt
-printf "${GREEN}Live hosts found! -> $PWD/live_hosts.txt ${NORMAL}"
+TOTAL_HOSTS=$(wc -l live_hosts.txt | awk '{print $1}')
+printf "${GREEN}$TOTAL_HOSTS live hosts found! -> $PWD/live_hosts.txt ${NORMAL}\n"
 
-printf "${YELLOW}Doing fast nmap scan (only a few ports). This may take some time ${NORMAL}"
+printf "${YELLOW}Doing fast nmap scan (only a few ports). This may take some time ${NORMAL}\n"
 sudo nmap -Ss -Pn -p 21-23,80,443,445,8080,8443 -o nmap_fast_scan.txt -iL live_hosts.txt
-printf "${GREEN}Nmap fast scan done! -> $PWD/nmap_fast_scan.txt ${NORMAL}"
+printf "${GREEN}Nmap fast scan done! -> $PWD/nmap_fast_scan.txt ${NORMAL}\n"
 
-printf "${YELLOW}Doing full nmap scan. This may take some time $1 ${NORMAL}"
+printf "${YELLOW}Doing full nmap scan. This may take some time $1 ${NORMAL}\n"
 sudo nmap -Pn -A -o nmap_full_scan.txt -iL live_hosts.txt
-printf "${GREEN}Nmap full scan done! -> $PWD/nmap_full_scan.txt ${NORMAL}"
+printf "${GREEN}Nmap full scan done! -> $PWD/nmap_full_scan.txt ${NORMAL}\n"
 
-printf "${GREEN}Script complete! Happy hunting! ${NORMAL}"
+printf "${GREEN}Script complete! Happy hunting! ${NORMAL}\n"
 
 exit 
