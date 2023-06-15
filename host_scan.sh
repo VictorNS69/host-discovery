@@ -25,7 +25,7 @@ CheckArguments (){
   # $1 is the number of arguments ($#)
   if [ "$1" -ne 2 ]
     then
-    echo "Please provide only two arguments"
+    echo "Please provide only two arguments. IP/Mask range and output directory"
     echo "Example usage: sudo ./host_scan.sh 192.168.0.0/24 /tmp/discovery"
     exit 1
   fi
