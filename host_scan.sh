@@ -110,11 +110,12 @@ FullNmap (){
 ##################
 
 Banner 
-OUTPUT_DIR=$(readlink -f "$2")
+
 # Checks
 CheckArguments $#
-CheckDir $OUTPUT_DIR
 CheckValidIpMask $1
+OUTPUT_DIR=$(readlink -f "$2")
+CheckDir $OUTPUT_DIR
 CheckRoot
   
 # Transform IP/mask to all IPs in the range
