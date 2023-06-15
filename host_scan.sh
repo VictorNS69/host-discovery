@@ -1,7 +1,6 @@
 #! /bin/bash
 
-# $1 format -> x.x.x.x/yy
-# TODO: check if the input follows the expected format "x.x.x.x/yy"
+# $1 format -> x.x.x.x/yy where yy = [0..32]
 
 # Just some colors
 NORMAL=$(tput sgr0)
@@ -39,12 +38,23 @@ else
   echo "Directory "$OUTPUT_DIR" exists"
 fi
 
+# Checking if valid IP/mask
+n='([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])'
+m='([0-9]|[12][0-9]|3[012])'
+
+if [[ $1 =~ ^$n(\.$n){3}/$m$ ]]
+  then
+  echo "valid IP range"
+else
+  printf "$1 does not follow the expected expression x.x.x.x/[0-32] or is not a valid range"
+fi
+exit
+
 # Checking if root (some issues depend on tool instalation, so using root)
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
   exit 1
 fi
-
 
 printf "${GREEN}Target: $1 ${NORMAL}\n"
 
