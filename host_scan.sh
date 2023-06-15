@@ -65,7 +65,7 @@ CheckValidIpMask (){
     then
     printf "${GREEN}Target: $1 ${NORMAL}\n"
   else
-    printf "$1 does not follow the expected expression x.x.x.x/[0-32] or is not a valid range"
+    printf "$1 does not follow the expected expression x.x.x.x/[0-32] or is not a valid range \n"
     echo "Exiting"
     exit 1
   fi
