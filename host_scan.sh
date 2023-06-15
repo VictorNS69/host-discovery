@@ -91,7 +91,7 @@ Ping3Discovery (){
 FastNmap (){
   # Fast nmap scan web ports and few more
   printf "${YELLOW}Doing fast nmap scan (only a few ports). This may take some time ${NORMAL}\n"
-  sudo nmap -sS -Pn -p 21-23,80,443,445,8080,8443 -T5 -o "$OUTPUT_DIR/nmap_fast_scan.txt" -iL "$OUTPUT_DIR/live_hosts.txt" --stats-every 1m
+  sudo nmap -sS -Pn -p 21-23,80,443,445,8000,8080,8443 -T5 -o "$OUTPUT_DIR/nmap_fast_scan.txt" -iL "$OUTPUT_DIR/live_hosts.txt" --stats-every 1m
   printf "${GREEN}Nmap fast scan done! -> \"$OUTPUT_DIR/nmap_fast_scan.txt\" ${NORMAL}\n"
 }
 
