@@ -97,14 +97,19 @@ FastNmap (){
 
 FullNmap (){
   # Nmap -A
-  printf "${YELLOW}Doing full nmap scan. This may take some time ${NORMAL}\n"
-  for ip in $(cat "$OUTPUT_DIR/live_hosts.txt")
-  do
-    sudo nmap -Pn -A -o "$OUTPUT_DIR/nmap_full_scan_${ip}.txt" --stats-every 1m ${ip}
-    printf "${GREEN}Nmap full scan for ${ip} done! -> \"$OUTPUT_DIR/nmap_full_scan_${ip}.txt\" ${NORMAL}\n"
-  done
+  # $1 IP
+  printf "${YELLOW}Doing full nmap scan for $1. This may take some time ${NORMAL}\n"
+  sudo nmap -Pn -A -o "$OUTPUT_DIR/nmap_full_scan_$1.txt" --stats-every 1m $1
+  printf "${GREEN}Nmap full scan for $1 done! -> \"$OUTPUT_DIR/nmap_full_scan_$1.txt\" ${NORMAL}\n"
 }
 
+FullNmapTop100UDP (){
+  # Nmap -A -sU
+  # $1 IP
+  printf "${YELLOW}Doing top 100 UDP nmap scan for $1. This may take some time ${NORMAL}\n"
+  sudo nmap -Pn -A -sU -p 7,9,17,19,49,53,67-69,80,88,111,120,123,135-139,158,161,162,177,427,443,445,497,500,514,515,518,520,593,623,626,631,996-999,1022,1023,1025-1030,1433,1434,1645,1646,1701,1718,1719,1812,1813,1900,2000,2048,2049,2222,2223,3283,3456,3703,4444,4500,5000,5060,5353,5632,8888,9200,10000,17185,20031,30718,31337,32768,32769,32771,32815,33281,49152,49153,49154,49156,49181,49182,49186,49190,49191,49192,49193,49194,49200,49201,49211,65024  -o "$OUTPUT_DIR/nmap_full_scan_top100_udp_$1.txt" --stats-every 1m $1
+  printf "${GREEN}Nmap top 100 UDP scan for $1 done! -> \"$OUTPUT_DIR/nmap_full_scan_top100_udp_$1.txt\" ${NORMAL}\n"
+}
 ##################
 ###### MAIN ######
 ##################
@@ -127,16 +132,22 @@ cat "$OUTPUT_DIR/ping3_sweep.txt" | awk -F[\'] '{print $2}' > "$OUTPUT_DIR/live_
 TOTAL_HOSTS=$(wc -l "$OUTPUT_DIR/live_hosts.txt" | awk '{print $1}')
 if [[ $TOTAL_HOSTS -eq 0 ]]
 then
- printf "${GREEN}No live hosts found${NORMAL}\n"
- #echo "Removing output directory (it is empty)"
- #rm -rf "$OUTPUT_DIR"
- echo "Exiting"
- exit 0
+  printf "${GREEN}No live hosts found${NORMAL}\n"
+  #echo "Removing output directory (it is empty)"
+  #rm -rf "$OUTPUT_DIR"
+  echo "Exiting"
+  exit 0
 fi 
 printf "${GREEN}$TOTAL_HOSTS live hosts found! -> \"$OUTPUT_DIR/live_hosts.txt\" ${NORMAL}\n"
   
 FastNmap
- 
-FullNmap
+
+for ip in $(cat "$OUTPUT_DIR/live_hosts.txt")
+do
+  FullNmap $ip
+
+  FullNmapTop100UDP $ip
+done
+
 printf "${GREEN}Script complete! Happy hunting! ${NORMAL}\n"
 exit 0
