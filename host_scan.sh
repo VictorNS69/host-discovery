@@ -84,7 +84,7 @@ Ping3Discovery (){
   printf "${YELLOW}Doing ping3 scan. This may take some time ${NORMAL}\n"
   for ip in $IP_LIST
   do
-    sudo ping3 -c 1 $ip | grep -v "Timeout" | tee -a "$OUTPUT_DIR/ping3_sweep.txt"
+    sudo ping3 -c 1 $ip | grep -v "Timeout\|Error" | tee -a "$OUTPUT_DIR/ping3_sweep.txt"
   done
 }
 
